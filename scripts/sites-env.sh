@@ -49,4 +49,9 @@ if [[ "$#" -eq 0 ]]; then
 fi
 
 cd "${project_root}"
+# Shell scripts may not have the executable bit preserved (e.g. on Vercel),
+# so run them through bash explicitly when the target is a shell script.
+if [[ -f "${1}" ]] && ([[ "${1}" == *.sh ]] || [[ "$(head -c 2 "${1}")" == "#!" ]]); then
+  exec bash "$@"
+fi
 exec "$@"
