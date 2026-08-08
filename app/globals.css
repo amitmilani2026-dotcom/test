@@ -1014,7 +1014,7 @@ button {
   color: var(--red);
 }
 .today-copy span {
-  font: 700 0.9cqw var(--font-geist-mono);
+  font: 700 1.5cqw var(--font-geist-mono);
   letter-spacing: 0.12em;
   padding-bottom: 0.9cqw;
 }
