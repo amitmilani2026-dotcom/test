@@ -484,9 +484,9 @@ useEffect(() => {
               <div className="journey-head">
                 <p>A NEW CHAPTER</p>
                 <h2>
-                  Built across
+                  Miles Apart
                   <br />
-                  <em>oceans.</em>
+                  <em>One Team.</em>
                 </h2>
                 <span>
                   Fifteen moments. One shared purpose. A first year worth
