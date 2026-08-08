@@ -671,7 +671,7 @@ button {
   box-shadow: 0 0 0 1cqw #ed1c2426;
 }
 .timeline-item span {
-  font-size: 1.5cqw;
+  font-size: 3.5cqw;
   line-height: 1.35;
   color: #b0b3b8;
 }
@@ -701,7 +701,7 @@ button {
   color: var(--red);
 }
 .legacy-head > span {
-  font-size: 1.8cqw;
+  font-size: 2.8cqw;
   color: #6e7275;
 }
 .family-portraits {
@@ -751,7 +751,7 @@ button {
   letter-spacing: -0.05em;
 }
 .family-portraits figcaption span {
-  font: 700 0.7cqw var(--font-geist-mono);
+  font: 700 1.5cqw var(--font-geist-mono);
   letter-spacing: 0.08em;
 }
 .generation-word {
@@ -823,7 +823,7 @@ button {
   padding: 2cqw 0.8cqw;
 }
 .leader-pair span {
-  font: 700 0.75cqw var(--font-geist-mono);
+  font: 700 1.6cqw var(--font-geist-mono);
   letter-spacing: 0.12em;
   color: var(--red);
 }
@@ -833,7 +833,7 @@ button {
   margin: 1cqw 0;
 }
 .leader-pair p {
-  font-size: 1.2cqw;
+  font-size: 2.4cqw;
   line-height: 1.5;
   color: #b3b6ba;
   margin: 0;
@@ -879,7 +879,7 @@ button {
   bottom: 6cqw;
   height: 54cqw;
   margin: 0;
-  background: #0a0a0a;
+  /* background: #0a0a0a; */
   /* padding: 1.6cqw; */
   box-shadow: 0 2.7cqw 5cqw #382e2028;
   transform: rotate(0.6deg);
@@ -1281,5 +1281,93 @@ button {
   }
   .stf__wrapper * {
     animation-duration: 0.01ms !important;
+  }
+}
+
+.journey-zoom {
+  position: absolute;
+  z-index: 6;
+  right: 1.6cqw;
+  bottom: 1.6cqw;
+  font: 700 0.85cqw var(--font-geist-mono);
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: #17191ce6;
+  padding: 0.9cqw 1.4cqw;
+  border-radius: 0.6cqw;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.journey-art:hover .journey-zoom,
+.journey-art:focus-visible .journey-zoom {
+  opacity: 1;
+}
+
+.journey-modal {
+  position: relative;
+  z-index: 9999;
+  inset: 0;
+  background: #0b0c0ee6;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 4vw, 64px);
+  cursor: zoom-out;
+  animation: journeyFade 0.25s ease;
+}
+.journey-modal img {
+  max-width: 75%;
+  max-height: 75%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  box-shadow: 0 30px 80px #0009;
+  border-radius: 4px;
+  cursor: default;
+
+}
+.journey-modal-close {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid #ffffff55;
+  background: #ffffff14;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.25s,
+    transform 0.25s;
+}
+.journey-modal-close:hover {
+  background: #ffffff2e;
+  transform: rotate(90deg);
+}
+.journey-modal-label {
+  position: absolute;
+  bottom: 26px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 700 10px var(--font-geist-mono);
+  letter-spacing: 0.18em;
+  color: #fff;
+  opacity: 0.7;
+}
+
+@keyframes journeyFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

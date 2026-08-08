@@ -30,9 +30,10 @@ type FlipApi = {
 export default function Home() {
   const bookNode = useRef<HTMLDivElement | null>(null);
   const flipApi = useRef<FlipApi | null>(null);
-  const [page, setPage] = useState(0);
+const [page, setPage] = useState(0);
   const [ready, setReady] = useState(false);
   const [sound, setSound] = useState(false);
+  const [journeyOpen, setJourneyOpen] = useState(false);
   const audio = useRef<{ ctx: AudioContext; gain: GainNode } | null>(null);
 
   useEffect(() => {
@@ -84,8 +85,9 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
     const keyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setJourneyOpen(false);
       if (event.key === "ArrowRight" || event.key === "PageDown")
         flipApi.current?.flipNext();
       if (event.key === "ArrowLeft" || event.key === "PageUp")
@@ -367,71 +369,20 @@ export default function Home() {
                   index="01"
                   name="Vern Milani"
                   role="PRESIDENT"
-                  text="Guiding the company’s vision and strategic growth with the family-first values that started it all."
+                  text="Guiding the company’s vision and strategic growth with maintaining family values."
                 />
                 <Leader
                   src="/rajesh-khanna.png"
                   index="02"
                   name="Rajesh Khanna"
                   role="GENERAL MANAGER"
-                  text="Ensuring operational excellence and seamless service delivery across every project."
+                  text="Ensuring operational excellence and seamless service delivery."
                 />
               </div>
             </div>
           </article>
 
-          <article className="album-page">
-            <div className="sheet journey-sheet">
-              <PageMark page="07" label="TEAM INDIA / 2025—2026" />
-              <div className="journey-head">
-                <p>A NEW CHAPTER</p>
-                <h2>
-                  Built across
-                  <br />
-                  <em>oceans.</em>
-                </h2>
-                <span>
-                  Fifteen moments. One shared purpose. A first year worth
-                  remembering.
-                </span>
-              </div>
-              <figure className="journey-art">
-                <img
-                  src="/india-journey.png"
-                  alt="Illustrated timeline of the Milani Electric India team journey"
-                />
-                <figcaption>OUR JOURNEY / 09.04.25—15.07.26</figcaption>
-              </figure>
-            </div>
-          </article>
-
-          <article className="album-page">
-            <div className="sheet gratitude-sheet">
-              <PageMark page="08" label="TEAM INDIA / ONE YEAR STRONG" light />
-              <div className="gratitude-image">
-                <img
-                  src="/india-team.png"
-                  alt="Illustration of the Milani Electric India team celebrating"
-                />
-              </div>
-              <div className="gratitude-copy">
-                <p>WITH GRATITUDE</p>
-                <h2>
-                  Thank you
-                  <br />
-                  for believing
-                  <br />
-                  <em>in us.</em>
-                </h2>
-                <blockquote>
-                  “Your leadership created opportunity. Your trust gave us room
-                  to grow.”
-                </blockquote>
-                <span>— MILANI ELECTRIC &amp; SOLAR PVT. LTD.</span>
-              </div>
-              <div className="gratitude-script">one year strong.</div>
-            </div>
-          </article>
+          
 
           <article className="album-page">
             <div className="sheet today-sheet">
@@ -500,6 +451,76 @@ export default function Home() {
               <div className="closing-m">M</div>
             </div>
           </article>
+ <article className="album-page">
+            <div className="sheet gratitude-sheet">
+              <PageMark page="08" label="TEAM INDIA / ONE YEAR STRONG" light />
+              <div className="gratitude-image">
+                <img
+                  src="/india-team.png"
+                  alt="Illustration of the Milani Electric India team celebrating"
+                />
+              </div>
+              <div className="gratitude-copy">
+                <p>WITH GRATITUDE</p>
+                <h2>
+                  Thank you
+                  <br />
+                  for believing
+                  <br />
+                  <em>in us.</em>
+                </h2>
+                <blockquote>
+                  “Your leadership created opportunity. Your trust gave us room
+                  to grow.”
+                </blockquote>
+                <span>— MILANI ELECTRIC &amp; SOLAR PVT. LTD.</span>
+              </div>
+              <div className="gratitude-script">Celebrating one year</div>
+            </div>
+          </article>
+          <article className="album-page">
+            <div className="sheet journey-sheet">
+              <PageMark page="07" label="TEAM INDIA / 2025—2026" />
+              <div className="journey-head">
+                <p>A NEW CHAPTER</p>
+                <h2>
+                  Built across
+                  <br />
+                  <em>oceans.</em>
+                </h2>
+                <span>
+                  Fifteen moments. One shared purpose. A first year worth
+                  remembering.
+                </span>
+              </div>
+              <figure
+                className="journey-art"
+                onClick={() => setJourneyOpen(true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setJourneyOpen(true);
+                  }
+                }}
+              >
+                <img
+                  src="/india-journey.png"
+                  alt="Illustrated timeline of the Milani Electric India team journey"
+                />
+                <span
+                  className="journey-zoom"
+                  aria-hidden="true"
+                >
+                  ⤢ FULL VIEW
+                </span>
+                <figcaption>OUR JOURNEY / 09.04.25—15.07.26</figcaption>
+              </figure>
+            </div>
+          </article>
+
+         
         </div>
       </section>
 
@@ -534,6 +555,32 @@ export default function Home() {
         </button>
       </nav>
       <p className="gesture-note">DRAG A CORNER · SWIPE · OR USE ARROW KEYS</p>
+
+      {journeyOpen && (
+        <div
+          className="journey-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="India journey full view"
+          onClick={() => setJourneyOpen(false)}
+        >
+          <button
+            className="journey-modal-close"
+            onClick={() => setJourneyOpen(false)}
+            aria-label="Close full view"
+          >
+            ✕
+          </button>
+          <span className="journey-modal-label">
+            OUR JOURNEY / 09.04.25—15.07.26
+          </span>
+          <img
+            src="/india-journey.png"
+            alt="Illustrated timeline of the Milani Electric India team journey"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </main>
   );
 }
