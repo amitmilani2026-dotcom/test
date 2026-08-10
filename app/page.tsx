@@ -30,11 +30,32 @@ type FlipApi = {
 export default function Home() {
   const bookNode = useRef<HTMLDivElement | null>(null);
   const flipApi = useRef<FlipApi | null>(null);
+  const pageTurnAudio = useRef<HTMLAudioElement | null>(null);
   const [page, setPage] = useState(0);
   const [ready, setReady] = useState(false);
-  const [sound, setSound] = useState(false);
   const [journeyOpen, setJourneyOpen] = useState(false);
-  const audio = useRef<{ ctx: AudioContext; gain: GainNode } | null>(null);
+
+  const playPageTurn = () => {
+    if (!pageTurnAudio.current) return;
+    pageTurnAudio.current.currentTime = 0;
+    void pageTurnAudio.current.play().catch(() => undefined);
+  };
+
+  const turnNext = () => {
+    playPageTurn();
+    flipApi.current?.flipNext();
+  };
+
+  const turnPrevious = () => {
+    playPageTurn();
+    flipApi.current?.flipPrev();
+  };
+
+  const openPage = (index: number) => {
+    if (index === page) return;
+    playPageTurn();
+    flipApi.current?.flip(index);
+  };
 
   useEffect(() => {
     let disposed = false;
@@ -89,56 +110,38 @@ export default function Home() {
     const keyboard = (event: KeyboardEvent) => {
       if (event.key === "Escape") setJourneyOpen(false);
       if (event.key === "ArrowRight" || event.key === "PageDown")
-        flipApi.current?.flipNext();
+        turnNext();
       if (event.key === "ArrowLeft" || event.key === "PageUp")
-        flipApi.current?.flipPrev();
+        turnPrevious();
     };
     addEventListener("keydown", keyboard);
     return () => removeEventListener("keydown", keyboard);
   }, []);
 
-  const toggleSound = () => {
-    if (!audio.current) {
-      const Ctx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext;
-      const ctx = new Ctx();
-      const gain = ctx.createGain();
-      gain.gain.value = 0.014;
-      gain.connect(ctx.destination);
-      const low = ctx.createOscillator();
-      const high = ctx.createOscillator();
-      low.type = "sine";
-      high.type = "triangle";
-      low.frequency.value = 44;
-      high.frequency.value = 67;
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 120;
-      low.connect(filter);
-      high.connect(filter);
-      filter.connect(gain);
-      low.start();
-      high.start();
-      audio.current = { ctx, gain };
-      setSound(true);
-      return;
-    }
-    const next = !sound;
-    audio.current.gain.gain.setTargetAtTime(
-      next ? 0.014 : 0,
-      audio.current.ctx.currentTime,
-      0.18,
-    );
-    setSound(next);
-  };
+  useEffect(() => {
+    if (!ready) return;
 
-  const openPage = (index: number) => flipApi.current?.flip(index);
+    const autoplayTimer = window.setTimeout(() => {
+      if (page === chapters.length - 1) {
+        flipApi.current?.flip(0);
+      } else {
+        flipApi.current?.flipNext();
+      }
+    }, 5000);
+
+    return () => window.clearTimeout(autoplayTimer);
+  }, [page, ready]);
+
   const pageLabel = String(page).padStart(2, "0");
 
   return (
     <main className={`album-app ${ready ? "is-ready" : ""}`}>
+      <audio
+        ref={pageTurnAudio}
+        src="/sounds/page-turn.mp3"
+        preload="auto"
+        aria-hidden="true"
+      />
       {/* <header className="album-header">
       <div className="album-brand">MILANI<span>1956—2026</span></div>
       <p>THE MILANI BOOK <i>/</i> ANNIVERSARY ALBUM</p>
@@ -151,7 +154,7 @@ export default function Home() {
       >
         <div className="studio-light" aria-hidden="true" />
         <div className="album-shadow" aria-hidden="true" />
-        <div className="flipbook" ref={bookNode}>
+        <div className="flipbook" ref={bookNode} onPointerDown={playPageTurn}>
           <article className="album-page hard-page" data-density="hard">
             <div className="sheet cover-sheet">
               <div className="cover-grain" />
@@ -531,7 +534,7 @@ export default function Home() {
 
       <nav className="album-controls" aria-label="Book navigation">
         <button
-          onClick={() => flipApi.current?.flipPrev()}
+          onClick={turnPrevious}
           disabled={page === 0}
           aria-label="Previous page"
         >
@@ -552,7 +555,7 @@ export default function Home() {
           </div>
         </div>
         <button
-          onClick={() => flipApi.current?.flipNext()}
+          onClick={turnNext}
           disabled={page === chapters.length - 1}
           aria-label="Next page"
         >
