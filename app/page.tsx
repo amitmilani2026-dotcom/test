@@ -30,7 +30,7 @@ type FlipApi = {
 export default function Home() {
   const bookNode = useRef<HTMLDivElement | null>(null);
   const flipApi = useRef<FlipApi | null>(null);
-const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0);
   const [ready, setReady] = useState(false);
   const [sound, setSound] = useState(false);
   const [journeyOpen, setJourneyOpen] = useState(false);
@@ -85,7 +85,7 @@ const [page, setPage] = useState(0);
     };
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     const keyboard = (event: KeyboardEvent) => {
       if (event.key === "Escape") setJourneyOpen(false);
       if (event.key === "ArrowRight" || event.key === "PageDown")
@@ -382,12 +382,10 @@ useEffect(() => {
             </div>
           </article>
 
-          
-
           <article className="album-page">
             <div className="sheet today-sheet">
               <PageMark
-                page="09"
+                page="07"
                 label="MILANI TODAY / SCALE WITH PURPOSE"
                 light
               />
@@ -420,7 +418,7 @@ useEffect(() => {
 
           <article className="album-page hard-page" data-density="hard">
             <div className="sheet closing-sheet">
-              <PageMark page="10" label="THE ROAD AHEAD / 2026—" light />
+              <PageMark page="08" label="THE ROAD AHEAD / 2026—" light />
               <div className="closing-copy">
                 <p>THE NEXT CHAPTER</p>
                 <h2>
@@ -432,10 +430,22 @@ useEffect(() => {
                     WHAT COMES NEXT.
                   </em>
                 </h2>
+
+                
                 <span>
                   The story continues with every home, every team member and
                   every family that places its trust in the Milani name.
                 </span>
+
+                <MilaniTypingList
+                  items={[
+                    "Plumbing , Heating and Air Conditioning",
+                    "Electric , Solar and Roofing",
+                    "HydroVac",
+                    "Electrical & Solar",
+                   
+                  ]}
+                />
               </div>
               <div className="closing-links">
                 <a href="https://milani.ca/" target="_blank" rel="noreferrer">
@@ -451,9 +461,9 @@ useEffect(() => {
               <div className="closing-m">M</div>
             </div>
           </article>
- <article className="album-page">
+          <article className="album-page">
             <div className="sheet gratitude-sheet">
-              <PageMark page="08" label="TEAM INDIA / ONE YEAR STRONG" light />
+              <PageMark page="09" label="TEAM INDIA / ONE YEAR STRONG" light />
               <div className="gratitude-image">
                 <img
                   src="/india-team.png"
@@ -480,7 +490,7 @@ useEffect(() => {
           </article>
           <article className="album-page">
             <div className="sheet journey-sheet">
-              <PageMark page="07" label="TEAM INDIA / 2025—2026" />
+              <PageMark page="10" label="TEAM INDIA / 2025—2026" />
               <div className="journey-head">
                 <p>A NEW CHAPTER</p>
                 <h2>
@@ -509,18 +519,13 @@ useEffect(() => {
                   src="/india-journey.png"
                   alt="Illustrated timeline of the Milani Electric India team journey"
                 />
-                <span
-                  className="journey-zoom"
-                  aria-hidden="true"
-                >
+                <span className="journey-zoom" aria-hidden="true">
                   ⤢ FULL VIEW
                 </span>
                 <figcaption>OUR JOURNEY / 09.04.25—15.07.26</figcaption>
               </figure>
             </div>
           </article>
-
-         
         </div>
       </section>
 
@@ -657,5 +662,51 @@ function Leader({
         <p>{text}</p>
       </div>
     </article>
+  );
+}
+
+function MilaniTypingList({
+  items,
+}: {
+  items: string[];
+}) {
+  const [current, setCurrent] = useState(0);
+  const [typed, setTyped] = useState(0);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    if (items.length === 0) return;
+    const text = items[current];
+
+    if (typed < text.length) {
+      const timer = setTimeout(() => setTyped((t) => t + 1), 45);
+      return () => clearTimeout(timer);
+    }
+
+    const timer = setTimeout(() => {
+      if (!fading) {
+        setFading(true);
+      } else {
+        setCurrent((c) => (c + 1) % items.length);
+        setTyped(0);
+        setFading(false);
+      }
+    }, fading ? 450 : 1000);
+    return () => clearTimeout(timer);
+  }, [current, typed, fading, items]);
+
+  return (
+    <ul className="milani-services" aria-live="polite">
+      <li className="typing">
+        <b>Milani</b>
+        {items.length > 0 && (
+          <span className={fading ? "is-fading" : ""}>
+            {" "}
+            {items[current].slice(0, typed)}
+            {!fading && <i className="caret" />}
+          </span>
+        )}
+      </li>
+    </ul>
   );
 }
