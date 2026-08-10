@@ -442,7 +442,7 @@ export default function Home() {
                     "Plumbing , Heating and Air Conditioning",
                     "Electric , Solar and Roofing",
                     "HydroVac",
-                    "Electrical & Solar",
+                    "Electric & Solar",
                    
                   ]}
                 />
