@@ -31,14 +31,23 @@ export default function Home() {
   const bookNode = useRef<HTMLDivElement | null>(null);
   const flipApi = useRef<FlipApi | null>(null);
   const pageTurnAudio = useRef<HTMLAudioElement | null>(null);
+  const pageTurnStopTimer = useRef<number | null>(null);
   const [page, setPage] = useState(0);
   const [ready, setReady] = useState(false);
   const [journeyOpen, setJourneyOpen] = useState(false);
 
   const playPageTurn = () => {
     if (!pageTurnAudio.current) return;
+    if (pageTurnStopTimer.current !== null) {
+      window.clearTimeout(pageTurnStopTimer.current);
+    }
+    pageTurnAudio.current.pause();
     pageTurnAudio.current.currentTime = 0;
     void pageTurnAudio.current.play().catch(() => undefined);
+    pageTurnStopTimer.current = window.setTimeout(() => {
+      pageTurnAudio.current?.pause();
+      pageTurnStopTimer.current = null;
+    }, 420);
   };
 
   const turnNext = () => {
